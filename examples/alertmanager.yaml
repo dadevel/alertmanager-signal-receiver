@@ -1,0 +1,16 @@
+route:
+  receiver: signal
+
+# dont send warnings when same alert is already critical
+inhibit_rules:
+- source_match:
+    severity: 'critical'
+  target_match:
+    severity: 'warning'
+  equal: ['alertname']
+
+receivers:
+- name: signal
+  webhook_configs:
+  - url: http://localhost:8080/alert
+

@@ -1,0 +1,24 @@
+name: CI
+on:
+  push:
+    branches:
+    - master
+  schedule:
+  - cron: 0 3 * * *
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Login
+      run: docker login --username dadevel --password-stdin <<< $DOCKERHUB_TOKEN
+      env:
+        DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Build image
+      run: docker build --tag dadevel/alertmanager-signal-receiver:latest .
+    - name: Push image
+      run: docker push dadevel/alertmanager-signal-receiver:latest
+    - name: Logout
+      run: docker logout
+
