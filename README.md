@@ -1,4 +1,4 @@
-# Alertmanager Signal Receiver [![CI](https://github.com/dadevel/alertmanager-signal-receiver/workflows/CI/badge.svg?branch=master)](https://github.com/dadevel/alertmanager-signal-receiver/actions)
+# Alertmanager Signal Receiver [![CI](https://github.com/dadevel/alertmanager-signal-receiver/workflows/CI/badge.svg?branch=master)](https://github.com/dadevel/alertmanager-signal-receiver/actions) [![Docker Image Version (latest by date)](https://img.shields.io/docker/v/dadevel/alertmanager-signal-receiver?color=blue&logo=docker)](https://hub.docker.com/r/dadevel/alertmanager-signal-receiver)
 
 A Prometheus Alertmanager Webhook Receiver that forwards alerts to a group in [Signal](https://signal.org/).
 
