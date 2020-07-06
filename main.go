@@ -19,7 +19,7 @@ var (
     sender string
     group string
     dataDir = "./data"
-    address = ":8080"
+    address = ":9709"
     logger = log.New(os.Stderr, "", 0)
 )
 
@@ -80,16 +80,16 @@ func writeError(res http.ResponseWriter, err error, code int) {
 }
 
 func loadEnvironment() {
-    sender = os.Getenv("SIGNAL_SENDER")
-    group = os.Getenv("SIGNAL_GROUP")
+    sender = os.Getenv("SIGNAL_RECEIVER_PHONE_NUMBER")
+    group = os.Getenv("SIGNAL_RECEIVER_GROUP_ID")
     if sender == "" || group == "" {
-        logger.Fatal("SIGNAL_SENDER and/or SIGNAL_GROUP environment variables are not set")
+        logger.Fatal("SIGNAL_RECEIVER_PHONE_NUMBER and/or SIGNAL_RECEIVER_GROUP_ID environment variable not set")
     }
-    if os.Getenv("SIGNAL_DATA") != "" {
-        dataDir = os.Getenv("SIGNAL_DATA")
+    if os.Getenv("SIGNAL_RECEIVER_DATA_DIR") != "" {
+        dataDir = os.Getenv("SIGNAL_RECEIVER_DATA_DIR")
     }
-    if os.Getenv("WEBHOOK_ADDRESS") != "" {
-        address = os.Getenv("WEBHOOK_ADDRESS")
+    if os.Getenv("SIGNAL_RECEIVER_LISTEN_ADDRESS") != "" {
+        address = os.Getenv("SIGNAL_RECEIVER_LISTEN_ADDRESS")
     }
 }
 
