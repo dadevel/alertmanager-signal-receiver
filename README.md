@@ -8,46 +8,46 @@ Heavily based on [prometheus-am-executor](https://github.com/imgix/prometheus-am
 
 Create a volume for signal-cli.
 
-~~~ sh
+~~~ bash
 docker volume create signal-data
 ~~~
 
 Start a temporary container with access to signal-cli.
 
-~~~
-docker run -it --rm -v signal-data:/app/data -e SIGNAL_SENDER=YOUR_PHONE_NUMBER --entrypoint /bin/sh dadevel/alertmanager-signal-receiver
+~~~ bash
+docker run -it --rm -v signal-data:/app/data --entrypoint /bin/sh dadevel/alertmanager-signal-receiver -i
 ~~~
 
 Run the following commands inside the container.
 
 Generate a QR-code and scan it with the Signal app on your phone to link a new device with you phone number.
 
-~~~ sh
+~~~ bash
 signal-cli --config ./data link --name alertmanager | tee /dev/stderr | head -n 1 | qrencode -t UTF8
 ~~~
 
 Create a new group.
 
-~~~ sh
-signal-cli --config ./data --username "$SIGNAL_SENDER" updateGroup --name Alerts --member SOMEONES_PHONE_PHONE --member ANOTHER_PHONE_NUMBER
+~~~ bash
+signal-cli --config ./data --username YOUR_PHONE_NUMBER updateGroup --name Alerts --member SOMEONES_PHONE_PHONE --member ANOTHER_PHONE_NUMBER
 ~~~
 
 Send a test message.
 
-~~~
-signal-cli --config ./data --username "$SIGNAL_SENDER" send --group GROUP_ID_FROM_ABOVE --message "Hello World!"
+~~~ bash
+signal-cli --config ./data --username YOUR_PHONE_NUMBER send --group ID_PRINTED_BY_PREV_COMMAND --message "Hello World!"
 ~~~
 
 Now that signal-cli is ready to go you can exit the temporary container and finally start the webhook receiver.
 
 ~~~ sh
-docker run -d -p 8080 -v signal-data:/app/data -e SENDER=YOUR_PHONE_NUMBER -e GROUP=YOUR_GROUP_ID dadevel/alertmanager-signal-receiver
+docker run -d -p 9709 -v signal-data:/app/data -e SIGNAL_RECEIVER_PHONE_NUMBER=YOUR_PHONE_NUMBER -e SIGNAL_RECEIVER_GROUP_ID=YOUR_GROUP_ID dadevel/alertmanager-signal-receiver
 ~~~
 
 Test it.
 
 ~~~ sh
-curl --fail --data @- http://localhost:8080/alert << EOF
+curl --fail --data @- http://localhost:9709/alert << EOF
 {
   "receiver": "default",
   "status": "firing",
@@ -95,9 +95,11 @@ curl --fail --data @- http://localhost:8080/alert << EOF
 EOF
 ~~~
 
+A configuration snippet for alertmanager can be found in [examples/alertmanager.yaml](./examples/alertmanager.yaml).
+
 ## Build
 
-~~~ sh
+~~~ bash
 docker build -t dadevel/alertmanager-signal-receiver .
 ~~~
 
