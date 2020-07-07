@@ -18,15 +18,25 @@ Start a temporary container with access to signal-cli.
 docker run -it --rm -v signal-data:/app/data --entrypoint /bin/sh dadevel/alertmanager-signal-receiver -i
 ~~~
 
+A: Register new phone number
+
 Run the following commands inside the container.
 
-Generate a QR-code and scan it with the Signal app on your phone to link a new device with you phone number.
+~~~ bash
+signal-cli --config ./data --username YOUR_PHONE_NUMBER register
+signal-cli --config ./data --username YOUR_PHONE_NUMBER verify PIN_RECEIVED_VIA_SMS
+~~~
+
+B: Link existing device
+
+Generate a QR-code and scan it with the Signal app on your phone to link a new device to your account.
 
 ~~~ bash
+apk add --no-cache libqrencode
 signal-cli --config ./data link --name alertmanager | tee /dev/stderr | head -n 1 | qrencode -t UTF8
 ~~~
 
-Create a new group.
+Either way continue with creating a new group.
 
 ~~~ bash
 signal-cli --config ./data --username YOUR_PHONE_NUMBER updateGroup --name Alerts --member SOMEONES_PHONE_PHONE --member ANOTHER_PHONE_NUMBER
@@ -35,7 +45,7 @@ signal-cli --config ./data --username YOUR_PHONE_NUMBER updateGroup --name Alert
 Send a test message.
 
 ~~~ bash
-signal-cli --config ./data --username YOUR_PHONE_NUMBER send --group ID_PRINTED_BY_PREV_COMMAND --message "Hello World!"
+signal-cli --config ./data --username YOUR_PHONE_NUMBER send --group ID_PRINTED_BY_PREVIOUS_COMMAND --message "Hello World!"
 ~~~
 
 Now that signal-cli is ready to go you can exit the temporary container and finally start the webhook receiver.
