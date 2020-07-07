@@ -13,7 +13,7 @@ WORKDIR /app
 COPY --from=signal /build/build/install/signal-cli/bin/ ./bin/
 COPY --from=signal /build/build/install/signal-cli/lib/ ./lib/
 COPY --from=receiver /build/alertmanager-signal-receiver ./bin/
-RUN apk add --no-cache libqrencode libgcc gcompat
+RUN apk add --no-cache libgcc gcompat
 RUN mkdir ./data && chown -R nobody:nogroup ./data
 USER nobody:nogroup
 ENV PATH /app/bin:$PATH
