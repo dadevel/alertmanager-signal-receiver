@@ -13,16 +13,14 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - name: Login
-      run: docker login --username dadevel --password-stdin <<< $DOCKERHUB_TOKEN
-      env:
-        DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Build and push image
       run: |
         version="$(git describe --tags --abbrev=0 --match='v*')"
+        docker login --username dadevel --password-stdin <<< $DOCKERHUB_TOKEN
+        trap 'docker logout' EXIT
         docker build --tag dadevel/alertmanager-signal-receiver:latest --tag "dadevel/alertmanager-signal-receiver:${version}" .
         docker push dadevel/alertmanager-signal-receiver:latest
         docker push "dadevel/alertmanager-signal-receiver:${version}"
-    - name: Logout
-      run: docker logout
+      env:
+        DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
