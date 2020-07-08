@@ -18,7 +18,7 @@ Start a temporary container with access to signal-cli.
 docker run -it --rm -v signal-data:/app/data --entrypoint /bin/sh dadevel/alertmanager-signal-receiver -i
 ~~~
 
-A: Register new phone number
+a) Register new phone number
 
 Run the following commands inside the container.
 
@@ -27,7 +27,7 @@ signal-cli --config ./data --username YOUR_PHONE_NUMBER register
 signal-cli --config ./data --username YOUR_PHONE_NUMBER verify PIN_RECEIVED_VIA_SMS
 ~~~
 
-B: Link existing device
+b) Link existing device
 
 Generate a QR-code and scan it with the Signal app on your phone to link a new device to your account.
 
@@ -105,7 +105,18 @@ curl --fail --data @- http://localhost:9709/alert << EOF
 EOF
 ~~~
 
-A configuration snippet for alertmanager can be found in [examples/alertmanager.yaml](./examples/alertmanager.yaml).
+## Configure
+
+| Environment variable               | Description                                                    |
+|------------------------------------|----------------------------------------------------------------|
+| `SIGNAL_RECEIVER_PHONE_NUMBER`     | phone number of signal account to send messages from, required |
+| `SIGNAL_RECEIVER_GROUP_ID`         | signal group id to send messages to, required                  |
+| `SIGNAL_RECEIVER_DATA_DIR`         | storage location used by `signal-cli`, defaults to `./data`    |
+| `SIGNAL_RECEIVER_LISTEN_ADDRESS`   | address and port to listen on, defaults to `:9709`             |
+| `SIGNAL_RECEIVER_VERBOSE`          | enable verbose logging, off by default                         |
+| `SIGNAL_RECEIVER_MESSAGE_TEMPLATE` | go template for messages, see source code for default value    |
+
+A configuration snippet for Alertmanager can be found in [examples/alertmanager.yaml](./examples/alertmanager.yaml).
 
 ## Build
 
