@@ -15,9 +15,9 @@ COPY --from=signal /build/build/install/signal-cli/lib/ ./lib/
 COPY --from=receiver /build/alertmanager-signal-receiver ./bin/
 RUN apk add --no-cache libgcc gcompat
 RUN mkdir ./data && chown -R nobody:nogroup ./data
-USER nobody:nogroup
 ENV PATH /app/bin:$PATH
+USER nobody:nogroup
+ENTRYPOINT ["alertmanager-signal-receiver"]
 VOLUME /app/data
-EXPOSE 9709
-ENTRYPOINT ["/app/bin/alertmanager-signal-receiver"]
+EXPOSE 9709/tcp
 
