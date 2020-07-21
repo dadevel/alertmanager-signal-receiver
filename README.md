@@ -1,4 +1,4 @@
-# Alertmanager Signal Receiver [![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/dadevel/alertmanager-signal-receiver?color=%23ef391a&label=version&logo=git&logoColor=%23ef391a)](https://github.com/dadevel/alertmanager-signal-receiver/releases) [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/dadevel/alertmanager-signal-receiver?color=%23099cec&label=version&logo=docker&logoColor=%23099cec)](https://hub.docker.com/r/dadevel/alertmanager-signal-receiver) [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/dadevel/alertmanager-signal-receiver/CI?label=ci&logo=github)](https://github.com/dadevel/alertmanager-signal-receiver/actions)
+# Alertmanager Signal Receiver
 
 A Prometheus Alertmanager Webhook Receiver that forwards alerts to a group in [Signal](https://signal.org/).
 
@@ -15,7 +15,7 @@ docker volume create signal-data
 Start a temporary container with access to signal-cli.
 
 ~~~ bash
-docker run -it --rm -v signal-data:/app/data --entrypoint /bin/sh dadevel/alertmanager-signal-receiver -i
+docker run -it --rm -v signal-data:/app/data --entrypoint /bin/sh dadevel/prometheus-signal-receiver -i
 ~~~
 
 a) Register new phone number
@@ -51,7 +51,7 @@ signal-cli --config ./data --username YOUR_PHONE_NUMBER send --group ID_PRINTED_
 Now that signal-cli is ready to go you can exit the temporary container and finally start the webhook receiver.
 
 ~~~ sh
-docker run -d -p 9709 -v signal-data:/app/data -e SIGNAL_RECEIVER_PHONE_NUMBER=YOUR_PHONE_NUMBER -e SIGNAL_RECEIVER_GROUP_ID=YOUR_GROUP_ID dadevel/alertmanager-signal-receiver
+docker run -d -p 9709 -v signal-data:/app/data -e SIGNAL_RECEIVER_PHONE_NUMBER=YOUR_PHONE_NUMBER -e SIGNAL_RECEIVER_GROUP_ID=YOUR_GROUP_ID dadevel/prometheus-signal-receiver
 ~~~
 
 Test it.
@@ -121,6 +121,6 @@ A configuration snippet for Alertmanager can be found in [examples/alertmanager.
 ## Build
 
 ~~~ bash
-docker build -t dadevel/alertmanager-signal-receiver .
+docker build -t dadevel/prometheus-signal-receiver .
 ~~~
 
