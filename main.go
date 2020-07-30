@@ -169,7 +169,7 @@ func (msg *Message) Send(config *Configuration) error {
 		logger.Printf("sending message: %s", text)
 	}
 	var buffer bytes.Buffer
-	cmd := exec.Command("echo", "signal-cli", "--config", config.DataDir, "--username", config.PhoneNumber, "send", "--group", config.GroupId)
+	cmd := exec.Command("signal-cli", "--config", config.DataDir, "--username", config.PhoneNumber, "send", "--group", config.GroupId)
 	cmd.Stdin = strings.NewReader(text)
 	cmd.Stdout = &buffer
 	cmd.Stderr = &buffer
