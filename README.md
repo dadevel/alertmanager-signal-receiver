@@ -39,7 +39,7 @@ signal-cli --config ./data link --name alertmanager | tee /dev/stderr | head -n 
 Either way continue with creating a new group.
 
 ~~~ bash
-signal-cli --config ./data --username YOUR_PHONE_NUMBER updateGroup --name Alerts --member SOMEONES_PHONE_PHONE --member ANOTHER_PHONE_NUMBER
+signal-cli --config ./data --username YOUR_PHONE_NUMBER updateGroup --name Alerts --member SOMEONES_PHONE_NUMBER ANOTHER_PHONE_NUMBER
 ~~~
 
 Send a test message.
