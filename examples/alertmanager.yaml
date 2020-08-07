@@ -1,8 +1,12 @@
+# official documentation: https://prometheus.io/docs/alerting/latest/configuration/
+
 route:
+  # default receiver
   receiver: signal
 
 receivers:
 - name: signal
   webhook_configs:
-  - url: http://localhost:9709/alert
+  # depends on your dns setup, could be a ip address as well
+  - url: http://signal-receiver:9709/alert
 

@@ -116,7 +116,7 @@ EOF
 | `SIGNAL_RECEIVER_VERBOSE`          | enable verbose logging, off by default                         |
 | `SIGNAL_RECEIVER_MESSAGE_TEMPLATE` | go template for messages, see source code for default value    |
 
-A configuration snippet for Alertmanager can be found in [examples/alertmanager.yaml](./examples/alertmanager.yaml).
+Example configurations for Prometheus and Alertmanager can be found in the [examples](./examples) directory.
 
 ## Build
 
