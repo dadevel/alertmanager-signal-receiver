@@ -7,6 +7,5 @@ route:
 receivers:
 - name: signal
   webhook_configs:
-  # depends on your dns setup, could be a ip address as well
+  # depends on your dns setup, could also be an ip address
   - url: http://signal-receiver:9709/alert
-

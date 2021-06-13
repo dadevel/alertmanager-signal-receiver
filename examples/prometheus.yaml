@@ -1,12 +1,12 @@
 # official documentation: https://prometheus.io/docs/prometheus/latest/configuration/configuration/
 
-# add your global options here
+# add global options here
 global:
   scrape_interval: 1m
   scrape_timeout: 15s
   evaluation_interval: 1m
 
-# add your scrape configs here
+# add scrape jobs here
 scrape_configs:
 - job_name: prometheus
   static_configs:
@@ -17,10 +17,9 @@ alerting:
   alertmanagers:
   - static_configs:
     - targets:
-      # depends on your dns setup, could be a ip address as well
+      # depends on your dns setup, could also be an ip address
       - alertmanager:9093
 
 # files and directories from where to load altering rules
 rule_files:
 - 'alerts/*.yaml'
-

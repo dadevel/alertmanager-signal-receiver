@@ -57,7 +57,7 @@ docker run -d -p 9709 -v signal-data:/app/data -e SIGNAL_RECEIVER_PHONE_NUMBER=Y
 Test it.
 
 ~~~ sh
-curl --fail --data @- http://localhost:9709/alert << EOF
+curl -i -d @- http://localhost:9709/alert << EOF
 {
   "receiver": "default",
   "status": "firing",
@@ -123,4 +123,3 @@ Example configurations for Prometheus and Alertmanager can be found in the [exam
 ~~~ bash
 docker build -t dadevel/prometheus-signal-receiver .
 ~~~
-
