@@ -1,4 +1,4 @@
-name: CI
+name: Testing
 on:
 - push
 - pull_request
@@ -27,15 +27,3 @@ jobs:
         fetch-depth: 0
     - name: Test
       run: go test -race ./...
-  publish:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Fetch source
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: Build
-      run: docker build -t dadevel/alertmanager-signal-receiver .
-    - name: Test
-      run: docker run --rm --entrypoint sh dadevel/alertmanager-signal-receiver -c 'signal-cli --version'

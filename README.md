@@ -15,7 +15,7 @@ docker volume create signal-data
 Start a temporary container with access to signal-cli.
 
 ~~~ bash
-docker run -it --rm -v signal-data:/app/data --entrypoint /bin/sh dadevel/prometheus-signal-receiver -i
+docker run -it --rm -v signal-data:/app/data --entrypoint /bin/sh ghcr.io/dadevel/alertmanager-signal-receiver -i
 ~~~
 
 a) Register new phone number
@@ -51,7 +51,7 @@ signal-cli --config ./data --username YOUR_PHONE_NUMBER send --group ID_PRINTED_
 Now that signal-cli is ready to go you can exit the temporary container and finally start the webhook receiver.
 
 ~~~ sh
-docker run -d -p 9709 -v signal-data:/app/data -e SIGNAL_RECEIVER_PHONE_NUMBER=YOUR_PHONE_NUMBER -e SIGNAL_RECEIVER_GROUP_ID=YOUR_GROUP_ID dadevel/prometheus-signal-receiver
+docker run -d -p 9709 -v signal-data:/app/data -e SIGNAL_RECEIVER_PHONE_NUMBER=YOUR_PHONE_NUMBER -e SIGNAL_RECEIVER_GROUP_ID=YOUR_GROUP_ID ghcr.io/dadevel/alertmanager-signal-receiver
 ~~~
 
 Test it.
@@ -121,5 +121,5 @@ Example configurations for Prometheus and Alertmanager can be found in the [exam
 ## Build
 
 ~~~ bash
-docker build -t dadevel/prometheus-signal-receiver .
+docker build -t ghcr.io/dadevel/alertmanager-signal-receiver .
 ~~~
