@@ -1,21 +1,28 @@
-FROM gradle:jdk16-openj9 as signal
+FROM debian:unstable-slim as signal-cli
 WORKDIR /build
-RUN git clone --single-branch --depth 1 https://github.com/AsamK/signal-cli.git .
-RUN gradle --no-daemon installDist
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update && apt-get install --no-install-recommends -y ca-certificates curl dos2unix
+RUN VERSION=$(curl -sSI https://github.com/AsamK/signal-cli/releases/latest | grep -i ^location: | dos2unix | grep -Eo '[0-9.]+$') && \
+curl -L https://github.com/AsamK/signal-cli/releases/download/v$VERSION/signal-cli-$VERSION.tar.gz | tar -xzf - && \
+mv ./signal-cli-$VERSION/ ./signal-cli/
 
-FROM golang:alpine as receiver
+FROM golang:latest as alertmanager-signal-receiver
 WORKDIR /build
 COPY . .
 RUN go build -o ./alertmanager-signal-receiver ./cmd/main.go
+RUN strip ./alertmanager-signal-receiver
 
-FROM openjdk:16-alpine
+FROM debian:unstable-slim
 WORKDIR /app
-COPY --from=signal /build/build/install/signal-cli/bin/signal-cli ./bin/
-COPY --from=signal /build/build/install/signal-cli/lib/ ./lib/
-COPY --from=receiver /build/alertmanager-signal-receiver ./bin/
-RUN apk add --no-cache libgcc gcompat
-RUN mkdir ./data && chown -R nobody:nogroup ./data
+ENV DEBIAN_FRONTEND noninteractive
+# without this directory the dpkg install script of openjdk fails
+RUN mkdir -p /usr/share/man/man1 && \
+apt-get update && apt-get install --no-install-recommends -y openjdk-16-jre-headless && \
+mkdir ./data && chown -R 1000:1000 ./data
+COPY --from=signal-cli /build/signal-cli/bin/signal-cli ./bin/
+COPY --from=signal-cli /build/signal-cli/lib/ ./lib/
+COPY --from=alertmanager-signal-receiver /build/alertmanager-signal-receiver ./bin/
 ENV PATH /app/bin:$PATH
-USER nobody:nogroup
+USER 1000:1000
 ENTRYPOINT ["alertmanager-signal-receiver"]
 EXPOSE 9709/tcp
