@@ -15,43 +15,32 @@ docker volume create signal-data
 Start a temporary container with access to signal-cli.
 
 ~~~ bash
-docker run -it --rm -v signal-data:/app/data --entrypoint /bin/sh ghcr.io/dadevel/alertmanager-signal-receiver -i
+docker run -it --rm -v signal-data:/app/data --entrypoint bash ghcr.io/dadevel/signal-receiver
 ~~~
 
-a) Register new phone number
-
-Run the following commands inside the container.
+Register a new phone number.
 
 ~~~ bash
-signal-cli --config ./data --username YOUR_PHONE_NUMBER register
-signal-cli --config ./data --username YOUR_PHONE_NUMBER verify PIN_RECEIVED_VIA_SMS
+signal-cli --config ./data --username $YOUR_PHONE_NUMBER register
+signal-cli --config ./data --username $YOUR_PHONE_NUMBER verify $CODE_RECEIVED_VIA_SMS
 ~~~
 
-b) Link existing device
-
-Generate a QR-code and scan it with the Signal app on your phone to link a new device to your account.
+Create a new group (prints base64-encoded group id on success).
 
 ~~~ bash
-apk add --no-cache libqrencode
-signal-cli --config ./data link --name alertmanager | tee /dev/stderr | head -n 1 | qrencode -t UTF8
-~~~
-
-Either way continue with creating a new group.
-
-~~~ bash
-signal-cli --config ./data --username YOUR_PHONE_NUMBER updateGroup --name Alerts --member SOMEONES_PHONE_NUMBER ANOTHER_PHONE_NUMBER
+signal-cli --config ./data --username $YOUR_PHONE_NUMBER updateGroup --name Alerts --description 'Alertmanager notifications' --set-permission-send-messages only-admins --member $SOMEONES_PHONE_NUMBER $ANOTHER_PHONE_NUMBER
 ~~~
 
 Send a test message.
 
 ~~~ bash
-signal-cli --config ./data --username YOUR_PHONE_NUMBER send --group ID_PRINTED_BY_PREVIOUS_COMMAND --message "Hello World!"
+signal-cli --config ./data --username $YOUR_PHONE_NUMBER send --group $GROUP_ID_FROM_ABOVE --message 'Hello World!'
 ~~~
 
 Now that signal-cli is ready to go you can exit the temporary container and finally start the webhook receiver.
 
 ~~~ sh
-docker run -d -p 9709 -v signal-data:/app/data -e SIGNAL_RECEIVER_PHONE_NUMBER=YOUR_PHONE_NUMBER -e SIGNAL_RECEIVER_GROUP_ID=YOUR_GROUP_ID ghcr.io/dadevel/alertmanager-signal-receiver
+docker run -d -p 9709 -v signal-data:/app/data -e SIGNAL_RECEIVER_PHONE_NUMBER=$YOUR_PHONE_NUMBER -e SIGNAL_RECEIVER_GROUP_ID=$YOUR_GROUP_ID ghcr.io/dadevel/signal-receiver
 ~~~
 
 Test it.
@@ -120,6 +109,10 @@ Example configurations for Prometheus and Alertmanager can be found in the [exam
 
 ## Build
 
+Build the binary.
+
 ~~~ bash
-docker build -t ghcr.io/dadevel/alertmanager-signal-receiver .
+go build -o ./alertmanager-signal-receiver ./cmd/main.go
 ~~~
+
+The `Dockerfile` is available under [github.com/dadevel/dockerfiles](https://github.com/dadevel/dockerfiles/tree/main/signal-receiver).
