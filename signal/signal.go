@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os/exec"
+	"sync"
 
 	"github.com/dadevel/alertmanager-signal-receiver/defaults"
 )
@@ -13,6 +14,7 @@ type Sender struct {
 	PhoneNumber string
 	GroupId     string
 	DataDir     string
+	lock        sync.Mutex
 }
 
 func New(phone string, group string, dir string) (*Sender, error) {
@@ -38,6 +40,8 @@ func (self *Sender) Send(msg io.Reader) error {
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	cmd.Stderr = &out
+	self.lock.Lock()
+	defer self.lock.Unlock()
 	err := cmd.Run()
 	if err != nil {
 		return fmt.Errorf("signal-cli: command execution failed: %s: %w", out.String(), err)

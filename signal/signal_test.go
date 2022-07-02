@@ -30,7 +30,7 @@ func TestNewGoodArgs(t *testing.T) {
 		t.Errorf("err: %v", err)
 	}
 	if want != *got {
-		t.Errorf("want: %v, got: %v", want, *got)
+		t.Errorf("want: %v, got: %v", &want, got)
 	}
 }
 
