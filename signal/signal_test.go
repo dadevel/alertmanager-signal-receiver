@@ -59,7 +59,7 @@ func TestSend(t *testing.T) {
 		t.Errorf("err: %v", err)
 	}
 	got := string(txt)
-	want := "--config /data --username +123456789 send --group test"
+	want := "--config /data --username +123456789 send --group test --message-from-stdin"
 	fmt.Println(got)
 	fmt.Println(want)
 	if len(want) != len(got) {

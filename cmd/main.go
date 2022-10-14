@@ -18,6 +18,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	go snd.Drain()
 	srv := webhook.New(
 		os.Getenv("SIGNAL_RECEIVER_LISTEN_ADDRESS"),
 		os.Getenv("SIGNAL_RECEIVER_VERBOSE") != "",
